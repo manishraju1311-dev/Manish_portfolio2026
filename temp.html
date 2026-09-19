@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Manish Kumar R — Cloud & Middleware Engineer</title>
+
+<!-- Fonts + Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/phosphor-icons">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-rX8fX0s6b3jv7gGq0g1S6E1lQkzv2yqR1q8aN+fJb7m0qF6x+o1yD4xKf1GxkP5y4j1QhpY7b8g6QqL6r3Q2eQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<!-- Locomotive Scroll (optional smooth scroll) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.2.1/dist/locomotive-scroll.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.2.1/dist/locomotive-scroll.min.js"></script>
+
+<!-- EmailJS (for contact form if configured) -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
+
+<style>
+  :root{
+    --bg: #040410;
+    --glass: rgba(255,255,255,0.05);
+    --glass-2: rgba(255,255,255,0.06);
+    --neon-1: #00f0ff;
+    --neon-2: #ff00ff;
+    --text: #eaf2ff;
+    --muted: rgba(255,255,255,0.65);
+    --card-radius: 14px;
+    --accent: linear-gradient(90deg, var(--neon-1), var(--neon-2));
+  }
+
+  body {
+    margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    transition: background .35s, color .35s;
+  }
+
+  .wrap {position:relative; min-height:100vh;}
+  nav {
+    position:fixed; left:20px; top:20px; z-index:9999; display:flex; gap:12px; align-items:center;
+  }
+  .nav-btn {background:var(--glass); border-radius:12px; padding:8px 12px; backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.04);}
+  .nav-btn a{color:var(--text); font-weight:600; font-size:14px; text-decoration:none;}
+  .toggle {cursor:pointer; padding:8px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:var(--glass); display:flex; align-items:center; gap:6px;}
+
+  /* PRELOADER */
+  .preloader{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; z-index:12000; background:linear-gradient(180deg,#03030a, #070716);}
+  .preloader .logo{font-weight:800; letter-spacing:2px; font-size:28px; color:var(--text);}
+  .progress-wrap{width:320px; height:8px; background:rgba(255,255,255,0.06); border-radius:10px; overflow:hidden;}
+  .progress-bar{height:100%; width:0; background:var(--accent);}
+
+  /* HERO */
+  .hero {position:relative; height:100vh; width:100%; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  iframe.spline {position:absolute; inset:0; width:100%; height:100%; border:0; z-index:1;}
+  .hero-overlay {position:absolute; inset:0; z-index:3; pointer-events:none;}
+  .hero-content {position:relative; z-index:6; max-width:1200px; width:100%; display:flex; align-items:center; gap:40px; padding:40px;}
+  .hero-left {flex:1; padding-left:60px; pointer-events:auto;}
+  .hero-right {flex:1; display:flex; justify-content:flex-end; padding-right:60px; pointer-events:auto;}
+  .intro {font-weight:800; font-size:48px; line-height:1.02; margin-bottom:12px; text-transform:capitalize;}
+  .subtitle {color:var(--muted); font-weight:500; margin-bottom:22px;}
+  .cta-row {display:flex; gap:16px;}
+  .btn {padding:12px 20px; border-radius:12px; font-weight:700; cursor:pointer; border:none; box-shadow:0 8px 30px rgba(0,0,0,0.6);}
+  .btn-primary {background:linear-gradient(90deg,var(--neon-1),var(--neon-2)); color:#081018;}
+  .btn-ghost {background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text);}
+
+  /* glowing orb elements */
+  .orb {position:absolute; border-radius:50%; filter:blur(40px); opacity:0.55; z-index:2;}
+  .orb.orb-1{width:420px;height:420px; left:-120px; top:-60px; background:radial-gradient(circle,var(--neon-1), transparent 50%);}
+  .orb.orb-2{width:380px;height:380px; right:-80px; bottom:-100px; background:radial-gradient(circle,var(--neon-2), transparent 50%);}
+  .orb.small-1{width:110px;height:110px; left:12%; top:60%; background:radial-gradient(circle,var(--neon-1), transparent 50%);}
+  .orb.small-2{width:90px;height:90px; left:75%; top:20%; background:radial-gradient(circle,var(--neon-2), transparent 50%);}
+
+  /* ABOUT / PROFILE */
+  section {padding:88px 6%; position:relative;}
+  .about-wrap {display:flex; gap:40px; align-items:center; max-width:1200px; margin:0 auto; flex-wrap:wrap;}
+  .profile {width:320px; min-width:280px; border-radius:18px; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); box-shadow:0 10px 40px rgba(0,0,0,0.6); padding:18px;}
+  .profile img{width:100%; height:100%; object-fit:cover; display:block; border-radius:12px;}
+  .about-info {flex:1; min-width:320px;}
+  .about-info h3{font-size:24px; margin-bottom:6px;}
+  .about-info p{color:var(--muted); margin-bottom:12px; line-height:1.6;}
+  .meta-list{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:8px; color:var(--muted); font-size:14px;}
+
+  /* Skills */
+  .skills {display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
+  .skill-pill {background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:10px 14px; border-radius:999px; border:1px solid rgba(255,255,255,0.04); color:var(--text); font-weight:600;}
+
+  /* Social row (merged where requested) */
+  .social-row {display:flex; gap:12px; justify-content:center; margin-top:14px;}
+  .social-row a{display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--text); text-decoration:none; font-size:18px;}
+
+/* ── EXPERIENCE ── */
+.exp-list{display:flex;flex-direction:column;gap:16px;max-width:1000px;margin:0 auto;}
+.exp-card{background:var(--surface);border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius);padding:22px;transition:border-color .2s;}
+.exp-card:hover{border-color:rgba(0,240,255,0.2);}
+.exp-card h4{font-size:16px;font-weight:700;margin-bottom:4px;}
+.exp-date{font-size:13px;color:var(--neon1);margin-bottom:10px;}
+.exp-card ul{color:var(--muted);font-size:14px;line-height:1.75;padding-left:18px;}
+
+/* CERTS */
+  .cert-grid{display:flex; gap:20px; flex-wrap:wrap; justify-content:center; max-width:1100px; margin:0 auto;}
+  .cert-card{width: 260px; border-radius:12px; padding:14px; background:var(--glass); border:1px solid rgba(255,255,255,0.04); transition:transform .25s, box-shadow .25s;}
+  .cert-card img{width:100%; border-radius:8px;}
+  .cert-card:hover{transform:translateY(-8px); box-shadow:0 8px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,240,255,0.06);}
+
+  
+
+  /* PROJECTS */
+  .Design-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; max-width:1200px; margin:0 auto;}
+  .proj-card {padding:16px; border-radius:1px; background:var(--glass-2); border:1px solid rgba(255,255,255,0.04); display:flex; flex-direction:column; gap:10px;}
+  .proj-thumb{width:100%; height: 220px;px; background:linear-gradient(90deg,#111,#0b0b14); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:700;}
+  
+  .proj-row {display:flex; gap:10px; margin-top:auto;}
+  .link-btn {padding:8px 12px; border-radius:10px; border:none; font-weight:700; cursor:pointer;}
+  .link-git {background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text);}
+  .link-live {background:linear-gradient(90deg,var(--neon-1),var(--neon-2)); color:#081018; font-weight:800;}
+
+  /* CONTACT */
+  .contact-wrap {max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:12px;}
+  .input {padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--text);}
+  .send-btn {padding:12px; border-radius:12px; border:none; background:var(--accent); color:#081018; font-weight:800; cursor:pointer; box-shadow: 0 8px 30px rgba(0,0,0,0.4);}
+
+  /* LIGHTBOX */
+  .lightbox {position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); z-index:20000;}
+  .lightbox img{max-width:90%; max-height:85%; border-radius:10px; box-shadow:0 30px 60px rgba(0,0,0,0.6);}
+
+  /* FOOTER */
+  footer{padding:40px 6%; text-align:center; color:var(--muted); font-size:14px;}
+
+  /* Responsive */
+  @media (max-width:900px){
+    .hero-left {padding-left:28px;}
+    .hero-right {display:none;}
+    .intro {font-size:34px;}
+    nav{left:12px; top:12px;}
+    .cert-grid{overflow:auto; gap:12px;}
+  }
+  @media (max-width:600px){
+    .about-wrap{padding:0 12px;}
+    .profile{width:100%;}
+  }
+
+  /* Active nav highlight */
+  .nav-btn.active{outline:2px solid rgba(255,255,255,0.04); box-shadow: 0 4px 20px rgba(0,0,0,0.6);}
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="wrap">
+
+  <!-- NAV -->
+<nav>
+  <div class="nav-btn"><a href="#about">About</a></div>
+  <div class="nav-btn"><a href="#experience">Experience</a></div>
+  <div class="nav-btn"><a href="#Design">Design</a></div>
+  <div class="nav-btn"><a href="#cert">Certification</a></div>
+  <div class="nav-btn"><a href="#contact">Contact</a></div>
+  <div class="toggle" id="themeToggle" title="Toggle theme">🌗 <span id="themeLabel" style="font-weight:600;margin-left:8px;font-size:13px;color:var(--muted)">Dark</span></div>
+</nav>
+
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader" aria-hidden="false">
+    <div class="logo">Manish</div>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero" id="home" data-scroll-section>
+    <!-- Use your preferred Spline embed url (iframe) -->
+    <iframe class="spline" src="https://my.spline.design/orb-WJJLRQLUDMdwoXsST4jT67gj/" allow="fullscreen"></iframe>
+
+    <!-- Decorative orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb small-1"></div>
+    <div class="orb small-2"></div>
+
+    <div class="hero-content">
+      <div class="hero-left" data-scroll data-scroll-speed="0.6">
+        <div class="intro">Hi, I'm Manish Kumar R</div>
+        <div class="subtitle">
+  <span class="typed-text-output d-inline-block text-body"></span>
+        <div class="subtitle">Cloud & DevOps Engineer | AWS | Kubernetes | Terraform | CI/CD | Building Resilient Cloud Platforms</div>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="downloadResume">Download Resume</button>
+          <button class="btn btn-ghost" onclick="document.querySelector('#contact').scrollIntoView({behavior:'smooth'})">Contact</button>
+        </div>
+      </div>
+      <div class="hero-right" data-scroll data-scroll-speed="0.9">
+        <!-- optional hero card or image -->
+      </div>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about" data-scroll-section>
+    <h2>About Me</h2>
+    <div class="about-wrap">
+      <div class="profile">
+        <img src="image/Manish_coat.png" alt="profile">
+        <div style="margin-top:12px; text-align:center;">
+          <div style="font-weight:800;">Manish Kumar R</div>
+          <div style="color:var(--muted); font-size:13px; margin-top:6px;">Cloud & DevOps Engineer</div>
+        </div>
+
+        <!-- Social row merged under profile (user snippet merged here) -->
+        <div class="d-flex justify-content-center mt-auto mb-3" style="margin-top:14px;">
+          <div class="social-row" style="justify-content:center;">
+            <a class="mx-2" href="https://www.linkedin.com/in/manish-kumar-r-a834261b6/" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
+            <a class="mx-2" href="https://www.behance.net/manishkumar324" target="_blank" rel="noopener"><i class="fab fa-behance"></i></a>
+            <a class="mx-2" href="https://github.com/" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+            <a class="mx-2" href="https://drive.google.com/drive/folders/1S6Y3Jna8-oWzcncy6T9Pl92ReXuF9Bzz" target="_blank" rel="noopener"><i class="fab fa-google-drive"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-info">
+        <h3>Manish Kumar R</h3>
+        <p>Cloud & DevOps Engineer with 4+ years of experience in AWS infrastructure, Kubernetes, CI/CD, and automation, delivering scalable, secure, and resilient cloud solutions.</p>
+
+        <div class="meta-list">
+          <div><strong>Name:</strong> Manish Kumar R</div>
+          <div><strong>Birthday:</strong> 13-Nov-1998</div>
+          <div><strong>Degree:</strong> BE - Mechanical Engineering</div>
+          <div><strong>Experience:</strong> 4.3 Years</div>
+          <div><strong>Phone:</strong> 8300660217</div>
+          <div><strong>Email:</strong> <a href="mailto:mani.can1311@gmail.com">mani.can1311@gmail.com</a></div>
+        </div>
+
+        <div class="skills" style="margin-top:14px;">
+          <div class="skill-pill">Amazon EC2</div>
+          <div class="skill-pill">AWS Cloud</div>
+          <div class="skill-pill">AWS Lambda</div>
+          <div class="skill-pill">IAM</div>
+          <div class="skill-pill">S3</div>
+          <div class="skill-pill">RDS</div>
+          <div class="skill-pill">Auto Scaling</div>
+          <div class="skill-pill">ACLS</div>
+          <div class="skill-pill">VPC</div>
+          <div class="skill-pill">CloudFormation</div>
+          <div class="skill-pill">CloudFront</div>
+          <div class="skill-pill">CloudWatch</div>
+          <div class="skill-pill">Dynamo DB</div>
+          <div class="skill-pill">CI/CD</div>
+          <div class="skill-pill">Docker</div>
+          <div class="skill-pill">ELB</div>
+          <div class="skill-pill">Excel VBA</div>
+          <div class="skill-pill">GitHub</div>
+          <div class="skill-pill">Grafana</div>
+          <div class="skill-pill">IAC</div>
+          <div class="skill-pill">Jenkins</div>
+          <div class="skill-pill">Kubernetes</div>
+          <div class="skill-pill">HELM Charts</div>
+          <div class="skill-pill">Ansible</div>
+          <div class="skill-pill">Terraform</div>
+          <div class="skill-pill">Nagios</div>
+          <div class="skill-pill">Open stack</div>
+          <div class="skill-pill">Prometheus</div>
+          <div class="skill-pill">Python</div>
+          <div class="skill-pill">Splunk</div>
+          <div class="skill-pill">Argo CD</div>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <h2>Work Experience</h2>
+  <div class="exp-list">
+
+    <div class="exp-card">
+      <h4>Cloud & DevOps Engineer — Tata Consultancy Services</h4>
+      <div class="exp-date">Feb 2022 – Present · Chennai, Tamil Nadu</div>
+      <ul>
+        <li>Managed Amazon EC2 instances with Elastic IPs for consistent web service availability.</li>
+        <li>Implemented secure access controls for S3 and EC2 using IAM roles, bucket policies, ACLs, and encryption.</li>
+        <li>Configured and managed VPC security groups and network ACLs for fine-grained access control.</li>
+        <li>Designed high-availability RDS architectures with automated failover strategies.</li>
+        <li>Authored Python automation scripts with AWS Lambda for serverless task execution.</li>
+        <li>Configured CloudWatch metrics and AWS Auto Scaling for dynamic capacity management.</li>
+        <li>Implemented ELB to distribute traffic across instances, improving fault tolerance.</li>
+        <li>Built Jenkins Multibranch Pipelines to automate CI/CD workflows across GitHub repos.</li>
+        <li>Managed Docker images and administered Kubernetes clusters across dev/staging/prod.</li>
+        <li>Automated workflows using Jenkins, Docker, and Argo CD with Helm for Kubernetes deployments.</li>
+      </ul>
+    </div>
+
+    <div class="exp-card">
+      <h4>Cloud & DevOps Engineer — Tata Consultancy Services</h4>
+      <div class="exp-date">Feb 2022 – Present</div>
+      <ul>
+        <li>Deployed Ericsson HSS (VNF) on OpenStack and CCDM (CNF) on AWS EKS, ensuring high availability and scalability.</li>
+        <li>Managed AWS IAM, EC2, ELB, and Auto Scaling for secure and resilient cloud infrastructure.</li>
+        <li>Automated infrastructure provisioning and deployments using Terraform, Ansible, Helm, Jenkins, and GitHub Actions.</li>
+        <li>Built and managed CI/CD pipelines with Jenkins Multibranch Pipeline for automated application delivery.</li>
+        <li>Containerized applications using Docker and deployed workloads on Kubernetes.</li>
+        <li>Configured Kubernetes resources including RBAC, Ingress, ConfigMaps, Secrets, and Autoscaling (HPA/VPA).</li>
+        <li>Executed rolling, blue-green, and zero-downtime deployments in production environments.</li>
+        <li>Monitored and optimized platform performance using Prometheus, Grafana, CloudWatch, and Splunk.</li>
+        <li>Improved system reliability, scalability, and operational efficiency through DevOps automation and cloud-native best practices.</li>
+    </div>
+
+
+  </div>
+</section>
+
+
+
+ <!-- PROJECTS -->
+  <section id="Design" data-scroll-section>
+    <h2>Design</h2>
+    <div class="Design-grid">
+      <!-- Repeat 6 sample projects; swap images/links as needed -->
+       
+         <div class="cert-grid">
+      <div class="cert-card">
+        <img src="image/thar.png" alt="cert1">
+      </div>
+
+               <div class="cert-grid">
+      <div class="cert-card">
+        <img src="image/24.png" alt="cert1">
+      </div>
+
+               <div class="cert-grid">
+      <div class="cert-card">
+        <img src="image/logo 3gh.23.jpg" alt="cert1">
+      </div>
+               <div class="cert-grid">
+      <div class="cert-card">
+        <img src="image/gpommcnnnnnf.57.jpg" alt="cert1">
+      </div>
+      
+
+    </div>
+               </div>
+               </div>
+         </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+<section id="cert" data-scroll-section>
+  <h2>Certifications</h2>
+  <div class="cert-grid">
+      <div class="cert-card">
+        <img src="image/aws-certified-cloud-practitioner.png" alt="cert1">
+        <div style="font-weight:700; margin-top:8px;">AWS Certified Cloud Practitioner</div>
+        <div style="color:var(--muted); font-size:13px; margin-top:6px;">Issued: July 21,2025</div>
+      </div>
+
+    <div class="cert-grid">
+      <div class="cert-card">
+        <img src="image/aws-certified-solutions-architect-associate.png" alt="cert1">
+        <div style="font-weight:700; margin-top:8px;">AWS Certified Solutions Architect–Associate</div>
+        <div style="color:var(--muted); font-size:13px; margin-top:6px;">Issued: July 21,2025</div>
+      </div>
+
+      <div class="cert-card">
+        <img src="image/associate-cloud-engineer-certification.png" alt="cert2">
+        <div style="font-weight:300; margin-top:3px;">Associate Cloud Engineer Certification</div>
+        <div style="color:var(--muted); font-size:13px; margin-top:6px;">Issued: October 26,2025</div>
+    </div>
+        <div class="cert-grid">
+      <div class="cert-card">
+        <img src="image/Oracle_Associates_Badge__1___1_-removebg-preview.png" alt="cert1">
+        <div style="font-weight:700; margin-top:8px;">Cloud Architect Associate</div>
+        <div style="color:var(--muted); font-size:13px; margin-top:6px;">Issued: October 14,2025</div>
+      </div>
+      
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" data-scroll-section>
+    <h2>Contact</h2>
+    <div class="contact-wrap">
+      <input id="name" class="input" placeholder="Your name" />
+      <input id="email" class="input" placeholder="Email address" />
+      <input id="subject" class="input" placeholder="Subject" />
+      <textarea id="message" class="input" rows="6" placeholder="Message"></textarea>
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:8px;">
+        <button class="send-btn" id="sendBtn">Send Message</button>
+        <button class="send-btn" id="resetBtn" style="background:transparent; color:var(--text); border:1px solid rgba(255,255,255,0.06);">Reset</button>
+      </div>
+      <div id="formStatus" style="text-align:center; color:var(--muted); margin-top:8px;"></div>
+    </div>
+  </section>
+
+  <footer>
+    © AWS 2026 — Designed By Manish
+  </footer>
+</div>
+
+<!-- Lightbox modal -->
+<div class="lightbox" id="lightbox" role="dialog" aria-hidden="true"><img id="lightboxImg" src="" alt="cert enlarged"></div>
+
+
+
+
+
+
+<script>
+/* ===========================
+   Configuration (safe defaults)
+   ===========================
+   - Put resume.pdf beside this index.html, or change RESUME_FILE below.
+   - Replace EmailJS placeholders to enable contact sending.
+*/
+const RESUME_FILE = 'Manish_Kumar.pdf'; // change if hosted elsewhere
+const EMAILJS_SERVICE_ID = '';   // e.g. 'service_xxx'
+const EMAILJS_TEMPLATE_ID = '';  // e.g. 'template_xxx'
+const EMAILJS_PUBLIC_KEY = '';   // e.g. 'user_xxx'
+
+/* ========== Preloader ========== */
+const progressBar = document.getElementById('progressBar');
+gsap.to(progressBar, {
+  width: "100%",
+  duration: 1.6,
+  ease: "power2.out",
+  onComplete: () => {
+    gsap.to('#preloader', {opacity:0, scale:0.98, duration:0.8, onComplete(){ document.getElementById('preloader').style.display='none'; }});
+    gsap.fromTo('.intro', {y:40, opacity:0}, {y:0, opacity:1, duration:0.9});
+    gsap.fromTo('.subtitle', {y:30, opacity:0}, {y:0, opacity:1, duration:0.9, delay:0.2});
+  }
+});
+
+/* ========== Floating Orbs animation ========== */
+gsap.utils.toArray('.orb').forEach((o, i) => {
+  gsap.to(o, {
+    y: (i % 2 === 0) ? -40 : 40,
+    x: (i % 3 === 0) ? 40 : -40,
+    duration: 8 + Math.random()*6,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    delay: i*0.25
+  });
+});
+
+/* ========== Particles cursor (subtle) ========== */
+(function particleCursor(){
+  const body = document.body;
+  const cursorEl = document.createElement('div');
+  cursorEl.style.position = 'fixed';
+  cursorEl.style.pointerEvents = 'none';
+  cursorEl.style.width = '10px';
+  cursorEl.style.height = '10px';
+  cursorEl.style.borderRadius = '50%';
+  cursorEl.style.transform = 'translate(-50%,-50%)';
+  cursorEl.style.zIndex = '99999';
+  cursorEl.style.mixBlendMode = 'screen';
+  cursorEl.style.background = 'radial-gradient(circle,#00f0ff, transparent 60%)';
+  cursorEl.style.opacity = '0.9';
+  body.appendChild(cursorEl);
+  window.addEventListener('mousemove', (e)=> {
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top = e.clientY + 'px';
+  });
+})();
+
+/* ========== Resume Download ========== */
+document.getElementById('downloadResume').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = "asset/Manish_Kumar.pdf";  // <-- change to your file location
+  a.download = "Manish_Kumar.pdf";  // <-- desired file name
+  a.click();
+});
+
+
+/* ========== Theme (persisted) ========== */
+const themeToggle = document.getElementById('themeToggle');
+const themeLabel = document.getElementById('themeLabel');
+const savedTheme = localStorage.getItem('theme') || 'dark';
+const setTheme = (theme) => {
+  if (theme === 'light') {
+    document.documentElement.style.setProperty('--bg','#f6f7fb');
+    document.documentElement.style.setProperty('--text','#081018');
+    document.documentElement.style.setProperty('--glass','rgba(0,0,0,0.06)');
+    document.documentElement.style.setProperty('--muted','rgba(0,0,0,0.55)');
+    document.documentElement.style.setProperty('--neon-1','#0066ff');
+    document.documentElement.style.setProperty('--neon-2','#8a2be2');
+    themeToggle.innerText = '☀️';
+    themeLabel.innerText = 'Light';
+  } else {
+    document.documentElement.style.setProperty('--bg','#040410');
+    document.documentElement.style.setProperty('--text','#eaf2ff');
+    document.documentElement.style.setProperty('--glass','rgba(255,255,255,0.05)');
+    document.documentElement.style.setProperty('--muted','rgba(255,255,255,0.65)');
+    document.documentElement.style.setProperty('--neon-1','#00f0ff');
+    document.documentElement.style.setProperty('--neon-2','#ff00ff');
+    themeToggle.innerText = '🌗';
+    themeLabel.innerText = 'Dark';
+  }
+  localStorage.setItem('theme', theme);
+};
+setTheme(savedTheme);
+themeToggle.addEventListener('click', () => {
+  const cur = localStorage.getItem('theme') || 'dark';
+  setTheme(cur === 'dark' ? 'light' : 'dark');
+});
+
+/* ========== Smooth scroll + active nav highlight ========== */
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const id = a.getAttribute('href').slice(1);
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  });
+});
+
+const navBtns = document.querySelectorAll('nav .nav-btn');
+const sections = document.querySelectorAll('section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const idx = Array.from(sections).indexOf(entry.target);
+    if (entry.isIntersecting) {
+      navBtns.forEach(n=> n.classList.remove('active'));
+      if (navBtns[idx]) navBtns[idx].classList.add('active');
+    }
+  });
+},{threshold:0.45});
+sections.forEach(s => observer.observe(s));
+
+/* ========== Locomotive init (optional - safe fallback) ========== */
+try {
+  const loco = new LocomotiveScroll({ el: document.querySelector('body'), smooth: true, multiplier: 0.9 });
+} catch(e){ console.warn('Locomotive not available (optional):', e); }
+
+/* ========== GSAP scroll triggers for sections ========== */
+gsap.utils.toArray('section').forEach(section => {
+  gsap.from(section, {
+    scrollTrigger: { trigger: section, start: "top 85%", toggleActions: "play none none none" },
+    y: 40,
+    opacity: 0,
+    duration: 0.9,
+    ease: "power2.out"
+  });
+});
+
+
+
+/* ========== Simple Certifications Carousel (vanilla JS) ========== */
+(function certCarousel(){
+  const wrap = document.getElementById('certCarousel');
+  const cards = Array.from(wrap.querySelectorAll('.cert-card'));
+  let index = 0;
+  const show = (i) => {
+    cards.forEach((c,idx)=> {
+      c.style.transform = `translateX(${(idx - i) * 110}%)`;
+      c.style.opacity = idx === i ? '1' : '0.6';
+      c.style.zIndex = idx === i ? '5' : '1';
+    });
+  };
+  // initial layout
+  cards.forEach((c, idx) => {
+    c.style.minWidth = '260px';
+    c.style.transition = 'transform .45s, opacity .45s';
+  });
+  show(index);
+
+  document.getElementById('certPrev').addEventListener('click', ()=> {
+    index = Math.max(0, index - 1);
+    show(index);
+  });
+  document.getElementById('certNext').addEventListener('click', ()=> {
+    index = Math.min(cards.length - 1, index + 1);
+    show(index);
+  });
+
+  // lightbox open on click
+  cards.forEach(c => c.addEventListener('click', () => {
+    const src = c.getAttribute('data-src') || c.querySelector('img')?.src;
+    if (!src) return;
+    const lb = document.getElementById('lightbox');
+    const lbimg = document.getElementById('lightboxImg');
+    lbimg.src = src;
+    lb.style.display = 'flex';
+    lb.setAttribute('aria-hidden','false');
+  }));
+})();
+
+/* close lightbox by click or Esc */
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox' || e.target.id === 'lightboxImg') {
+    document.getElementById('lightbox').style.display = 'none';
+    document.getElementById('lightbox').setAttribute('aria-hidden','true');
+  }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('lightbox').style.display = 'none'; }} );
+
+/* ========== EmailJS contact send (with graceful fallback) ========== */
+const statusEl = document.getElementById('formStatus');
+if (window.emailjs && EMAILJS_PUBLIC_KEY) {
+  try { emailjs.init(EMAILJS_PUBLIC_KEY); } catch(e){ console.warn('EmailJS init failed', e); }
+}
+
+document.getElementById('sendBtn').addEventListener('click', async () => {
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const subject = document.getElementById('subject').value.trim();
+  const message = document.getElementById('message').value.trim();
+
+  if (!name || !email || !message) {
+    statusEl.style.color = '';
+    statusEl.textContent = 'Please fill name, email and message.';
+    return;
+  }
+
+  // If EmailJS not configured, show visual-only fallback
+  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+    statusEl.style.color = '';
+    statusEl.textContent = 'Email sending not configured — this is a visual demo. Copy details manually: ' + name + ' • ' + email;
+    return;
+  }
+
+  statusEl.style.color = '';
+  statusEl.textContent = 'Sending...';
+
+  try {
+    const templateParams = { from_name: name, from_email: email, subject, message };
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+    statusEl.style.color = 'lightgreen';
+    statusEl.textContent = 'Message sent — thank you!';
+    document.getElementById('resetBtn').click();
+  } catch (err) {
+    console.error(err);
+    statusEl.style.color = '#ff8b8b';
+    statusEl.textContent = 'Error sending message. Check EmailJS setup in code & console.';
+  }
+});
+
+/* Reset */
+document.getElementById('resetBtn').addEventListener('click', () => {
+  ['name','email','subject','message'].forEach(id => document.getElementById(id).value = '');
+  statusEl.textContent = '';
+});
+
+/* Accessibility: focus outlines for keyboard users */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab') document.body.classList.add('show-focus-outlines');
+});
+
+/* small tweak: ensure cert carousel responsive transform on load */
+window.addEventListener('load', ()=> {
+  setTimeout(()=> {
+    gsap.set('.cert-card', {clearProps:'transform'});
+    // reapply small transform to center first
+    const first = document.querySelector('.cert-card');
+    if (first) first.style.transform = 'translateX(0%)';
+  }, 300);
+});
+
+document.getElementById("contactForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        message: document.getElementById("message").value
+    };
+
+    const response = await fetch("https://your-api-url/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    alert(result.message);
+});
+
+</script>
+</body>
+</html>
+
